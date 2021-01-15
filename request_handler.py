@@ -1,8 +1,14 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from animals import get_all_animals, get_single_animal, create_animal, delete_animal, update_animal
-from locations import get_all_locations, get_single_location, create_location, delete_location, update_location
-from customers import get_all_customers, get_single_customer, create_customer, delete_customer, update_customer
+from animals import get_all_animals get_single_animal 
+from animals import create_animal, delete_animal 
+from animals import update_animal
+from locations import get_all_locations, get_single_location
+from locations import create_location, delete_location
+from locations import update_location
+from customers import get_all_customers, get_single_customer
+from customers import create_customer, delete_customer
+from customers import update_customer
 from employees import get_all_employees, get_single_employees, create_employee, delete_employee, update_employee
 
 
@@ -93,8 +99,8 @@ class HandleRequests(BaseHTTPRequestHandler):
     # It handles any POST request.
     def do_POST(self):
         self._set_headers(201)
-        content_len = int(self.headers.get('content-length', 0))
-        post_body = self.rfile.read(content_len)
+        content_len = int(self.headers.get('content-length', 0)) #Counts number of characters from request
+        post_body = self.rfile.read(content_len) #
 
         # Convert JSON string to a Python dictionary
         post_body = json.loads(post_body)
