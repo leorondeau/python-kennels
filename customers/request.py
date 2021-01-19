@@ -1,3 +1,9 @@
+import sqlite3
+import json
+from models import Customer
+
+
+
 CUSTOMERS = [
     {
         "email": "leon@kennels.com",
@@ -20,19 +26,56 @@ CUSTOMERS = [
 ]
 
 def get_all_customers():
-    return CUSTOMERS
+    
+    with sqlite3.connect("./kennel.db") as conn:
+
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        SELECT
+            a.id, 
+            a.name,
+            a.email,
+            a.password
+        FROM customer a
+        """)
+
+        customers = []
+
+        dataset = db_cursor.fetchall()
+
+        for row in dataset:
+
+            customer = Customer(row['id'], row['name'], row['email'],
+                                row['password'])
+
+            customers.append(customer.__dict__)
+
+        return json.dumps(customers)
 
 def get_single_customer():
-    
-    requested_customer = None
+    with sqlite3.connect("./kennel.db") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
 
-    for customer in CUSTOMERS:
+        db_cursor.execute("""
+        SELECT
+            a.id,
+            a.name,
+            a.email,
+            a.password
+        FROM customer a
+        WHERE a.id = ?
+        """, ( id, ))
 
-        if customer["id"] == id:
-            requested_customer = customer
+        data = db_cursor.fetchone()
 
-    return requested_customer
+        customer = Customer(data['id'], data['name'], data['email'],
+                            data['password'])
+        return json.dumps(customer.__dict__)
 
+        
 def create_customer(customer):
 
     max_id = CUSTOMERS[-1]["id"]
