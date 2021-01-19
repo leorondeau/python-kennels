@@ -1,6 +1,6 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from animals import get_all_animals get_single_animal 
+from animals import get_all_animals, get_single_animal 
 from animals import create_animal, delete_animal 
 from animals import update_animal
 from locations import get_all_locations, get_single_location
@@ -9,8 +9,8 @@ from locations import update_location
 from customers import get_all_customers, get_single_customer
 from customers import create_customer, delete_customer
 from customers import update_customer
-from employees import get_all_employees, get_single_employees, create_employee, delete_employee, update_employee
-
+from employees import get_all_employees, get_single_employee
+from employees import create_employee, delete_employee, update_employee
 
 
 
@@ -81,14 +81,14 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         if resource == "customers":
             if id is not None:
-                response = f"{get_single_customers(id)}"
+                response = f"{get_single_customer(id)}"
 
             else:
                 response = f"{get_all_customers()}"
 
         if resource == "employees":
             if id is not None:
-                response = f"{get_single_employees(id)}"
+                response = f"{get_single_employee(id)}"
 
             else:
                 response = f"{get_all_employees()}"

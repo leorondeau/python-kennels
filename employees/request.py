@@ -1,3 +1,8 @@
+import sqlite3
+import json
+from models import Employee
+
+
 EMPLOYEES = [
     {
         "name": "Hector",
@@ -20,18 +25,65 @@ EMPLOYEES = [
 ]
 
 def get_all_employees():
-    return EMPLOYEES
+    # Open a connection to the database
+    with sqlite3.connect("./kennel.db") as conn:
 
-def get_single_employees():
+        # Just use these. It's a Black Box.
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
 
-    requested_employee = None
+        # Write the SQL query to get the information you want
+        db_cursor.execute("""
+        SELECT
+            a.id,
+            a.name,
+            a.address,                        
+            a.location_id
+            
+        FROM employee a
+        """)
 
-    for employee in EMPLOYEES:
+        
+        employees = []
 
-        if employee["id"] == id:
-            requested_employee = employee
-    
-    return requested_employee
+        dataset = db_cursor.fetchall()
+
+        for row in dataset:
+
+            employee = Employee(row['id'], row['name'],
+                            row['address'], row['location_id']
+                            )
+
+            employees.append(employee.__dict__)
+
+        return json.dumps(employees)
+
+def get_single_employee(id):
+    with sqlite3.connect("./kennel.db") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # Use a ? parameter to inject a variable's value
+        # into the SQL statement.
+        db_cursor.execute("""
+        SELECT
+            a.id,
+            a.name,
+            a.address
+            a.location_id
+
+        FROM employee a
+        WHERE a.id = ?
+        """, ( id, ))
+
+        # Load the single result into memory
+        data = db_cursor.fetchone()
+
+        # Create an employee instance from the current row
+        employee = Employee(data['id'], data['name'], data['address'],
+                            data['location_id'])
+
+        return json.dumps(employee.__dict__)
 
 
 def create_employee(employee):
