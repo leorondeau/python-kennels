@@ -9,6 +9,7 @@ from locations import update_location
 from customers import get_all_customers, get_single_customer
 from customers import create_customer, delete_customer
 from customers import update_customer
+from customers import get_customers_by_email
 from employees import get_all_employees, get_single_employee
 from employees import create_employee, delete_employee, update_employee
 
