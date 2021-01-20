@@ -3,6 +3,8 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from animals import get_all_animals, get_single_animal 
 from animals import create_animal, delete_animal 
 from animals import update_animal
+from animals import get_animals_by_location_id
+from animals import get_animals_by_status
 from locations import get_all_locations, get_single_location
 from locations import create_location, delete_location
 from locations import update_location
@@ -12,6 +14,8 @@ from customers import update_customer
 from customers import get_customers_by_email
 from employees import get_all_employees, get_single_employee
 from employees import create_employee, delete_employee, update_employee
+from employees import get_employees_by_location
+
 
 
 
@@ -25,7 +29,7 @@ class HandleRequests(BaseHTTPRequestHandler):
     def parse_url(self, path):
         path_params = path.split("/")
         resource = path_params[1]
-
+        
         if "?" in resource:
             #What is happening with both the param and the resource being split
             param = resource.split("?")[1]
@@ -107,6 +111,15 @@ class HandleRequests(BaseHTTPRequestHandler):
 
             if key == "email" and resource == "customers":
                 response = get_customers_by_email(value)
+
+            elif key == "location_id" and resource == "animals":
+                response = get_animals_by_location_id(value)
+
+            elif key == "location_id" and resource == "employees":
+                response = get_employees_by_location(value)
+
+            elif key == "status" and resource == "animals":
+                response = get_animals_by_status(value)
 
         self.wfile.write(response.encode())
 
