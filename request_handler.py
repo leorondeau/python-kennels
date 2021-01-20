@@ -20,28 +20,33 @@ from employees import create_employee, delete_employee, update_employee
 # work together for a common purpose. In this case, that
 # common purpose is to respond to HTTP requests from a client.
 class HandleRequests(BaseHTTPRequestHandler):
+    
     def parse_url(self, path):
-        
-        # Just like splitting a string in JavaScript. If the
-        # path is "/animals/1", the resulting list will
-        # have "" at index 0, "animals" at index 1, and "1"
-        # at index 2.
-        path_params = path.split("/") # ['', 'animals' , 2]
+        path_params = path.split("/")
         resource = path_params[1]
-        id = None
 
-        # Try to get the item at index 2
-        try:
-            # Convert the string "1" to the integer 1
-            # This is the new parseInt()
-            id = int(path_params[2])
-        except IndexError:
-            pass  # No route parameter exists: /animals
-        except ValueError:
-            pass  # Request had trailing slash: /animals/
+        if "?" in resource:
+            #What is happening with both the param and the resource being split
+            param = resource.split("?")[1]
+            resource = resource.split("?")[0]
+            pair = param.split("=")
+            key = pair[0]
+            value = pair[1]
 
-        return (resource, id)  # This is a tuple
-    # Here's a class function
+            return (resource, key, value )
+        
+        else:
+            id = None
+
+            try:
+                id = int(path_params[2])
+            except IndexError:
+                pass
+            except ValueError:
+                pass
+
+            return (resource, id)
+    
     def _set_headers(self, status):
         self.send_response(status)
         self.send_header('Content-type', 'application/json')
@@ -63,35 +68,44 @@ class HandleRequests(BaseHTTPRequestHandler):
         response = {}  # Default response
 
         # Parse the URL and capture the tuple that is returned
-        (resource, id) = self.parse_url(self.path)
+        parsed = self.parse_url(self.path)
 
-        if resource == "animals":
-            if id is not None:
-                response = f"{get_single_animal(id)}"
+        if len(parsed) == 2:
+            ( resource, id) = parsed
 
-            else:
-                response = f"{get_all_animals()}"
+            if resource == "animals":
+                if id is not None:
+                    response = f"{get_single_animal(id)}"
+
+                else:
+                    response = f"{get_all_animals()}"
+            
+            elif resource == "locations":
+                if id is not None:
+                    response = f"{get_single_location(id)}"
+
+                else:
+                    response = f"{get_all_locations()}"
+
+            elif resource == "customers":
+                if id is not None:
+                    response = f"{get_single_customer(id)}"
+
+                else:
+                    response = f"{get_all_customers()}"
+
+            elif resource == "employees":
+                if id is not None:
+                    response = f"{get_single_employee(id)}"
+
+                else:
+                    response = f"{get_all_employees()}"
         
-        if resource == "locations":
-            if id is not None:
-                response = f"{get_single_location(id)}"
+        elif len(parsed) == 3:
+            (resource, key, value ) = parsed
 
-            else:
-                response = f"{get_all_locations()}"
-
-        if resource == "customers":
-            if id is not None:
-                response = f"{get_single_customer(id)}"
-
-            else:
-                response = f"{get_all_customers()}"
-
-        if resource == "employees":
-            if id is not None:
-                response = f"{get_single_employee(id)}"
-
-            else:
-                response = f"{get_all_employees()}"
+            if key == "email" and resource == "customers":
+                response = get_customers_by_email(value)
 
         self.wfile.write(response.encode())
 
