@@ -1,5 +1,6 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from os import closerange
 from animals import get_all_animals, get_single_animal 
 from animals import create_animal, delete_animal 
 from animals import update_animal
@@ -74,6 +75,7 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         # Parse the URL and capture the tuple that is returned
         parsed = self.parse_url(self.path)
+        
 
         if len(parsed) == 2:
             ( resource, id) = parsed
@@ -176,7 +178,7 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         elif resource == "customers":
             delete_customer(id)
-        # Encode the new animal and send in response
+        
         self.wfile.write("".encode())
 
     def do_PUT(self):
