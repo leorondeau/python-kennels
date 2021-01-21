@@ -38,8 +38,8 @@ def get_all_employees():
             e.id,
             e.name,
             e.address,                        
-            e.location_id
-            
+            e.location_id,
+            e.animal_id
         FROM employee e
         """)
 
@@ -51,8 +51,7 @@ def get_all_employees():
         for row in dataset:
 
             employee = Employee(row['id'], row['name'],
-                            row['address'], row['location_id']
-                            )
+                            row['address'], row['location_id'], row['animal_id'])
 
             employees.append(employee.__dict__)
 
@@ -71,6 +70,7 @@ def get_single_employee(id):
             e.name,
             e.address,
             e.location_id
+            e.animal_id
 
         FROM employee e
         WHERE e.id = ?
@@ -81,7 +81,7 @@ def get_single_employee(id):
 
         # Create an employee instance from the current row
         employee = Employee(data['id'], data['name'], data['address'],
-                            data['location_id'])
+                            data['location_id'], data['animal_id'])
 
         return json.dumps(employee.__dict__)
 
@@ -97,7 +97,7 @@ def get_employees_by_location(location_id):
             e.name,
             e.address,
             e.location_id
-
+            e.animal_id
         FROM Employee e
         WHERE e.location_id = ?
         """, ( location_id, ))
@@ -107,7 +107,7 @@ def get_employees_by_location(location_id):
 
         for row in dataset:
             employee = Employee(row['id'], row['name'], row['address'],
-                        row['location_id'])
+                        row['location_id'], row['animal_id'])
 
             employees.append(employee.__dict__)
         
