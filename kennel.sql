@@ -30,8 +30,7 @@ CREATE TABLE `Employee` (
 	`address`	TEXT NOT NULL,
 	`location_id` INTEGER NOT NULL,
 	`animal_id` INTEGER NOT NULL,
-	FOREIGN KEY(`location_id`) REFERENCES `Location`(`id`),
-	FOREIGN KEY(`animal_id`) REFERENCES `Animal`(`id`)
+	FOREIGN KEY(`location_id`) REFERENCES `Location`(`id`)
 
 );
 
@@ -61,11 +60,5 @@ INSERT INTO `Animal` VALUES (null, "Daps", "Kennel", "Boxer", 2, 2);
 INSERT INTO `Animal` VALUES (null, "Daps", "Kennel", "Boxer", 2, 2);
 
 
-SELECT
-    e.id, 
-    e.name,
-    e.address,
-	e.location_id,
-	e.animal_id
-FROM Employee e
-WHERE e.id = 2;
+
+SELECT * FROM Animal ORDER BY id DESC;

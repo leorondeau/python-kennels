@@ -6,3 +6,4 @@ class Employee():
         self.address = address
         self.locationId = location_id
         self.animalId = animal_id
+        self.location = None
